@@ -1,0 +1,5 @@
+.confirm-modal{width:min(460px,100%);background:#1b1d18;border:1px solid #55503e;padding:28px}
+.confirm-modal h2{font:500 28px var(--serif);margin:15px 0 8px}
+.confirm-modal p{color:#aaa99f;font-size:12px;line-height:1.65;margin-bottom:22px}
+.confirm-modal p strong{color:#e5dfd0}
+.confirm-modal>div:last-child{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap}
