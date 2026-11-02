@@ -13,6 +13,8 @@ beforeEach(() => {
   generateContent.mockReset();
   clientOptions.length = 0;
   process.env.NODE_ENV = 'test';
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/test';
+  process.env.SESSION_SECRET = 'unit-test-session-secret-long-enough-32';
   process.env.GEMINI_API_KEY = 'unit-test-key';
   process.env.GEMINI_MODEL = 'gemini-3.8-flash';
   process.env.GEMINI_MOCK_MODE = 'false';
@@ -20,6 +22,24 @@ beforeEach(() => {
 });
 
 describe('Gemini output repair', () => {
+  it.each([
+    ['easy', 3, 5, 2], ['medium', 4, 7, 3], ['hard', 5, 9, 3],
+  ])('supports explicitly enabled production mock mode for %s cases', async (difficulty, suspects, evidence, hints) => {
+    process.env.NODE_ENV = 'production';
+    process.env.GEMINI_MOCK_MODE = 'true';
+    const { env } = await import('../../src/config/env.js');
+    const { generateMystery } = await import('../../src/services/gemini/geminiService.js');
+
+    expect(env.geminiMockMode).toBe(true);
+    const result = await generateMystery({ premise: 'A sealed archive loses a rare handwritten map overnight.', difficulty, genre: 'theft', settingPreference: '' });
+
+    expect(result.mode).toBe('mock');
+    expect(result.data.suspects).toHaveLength(suspects);
+    expect(result.data.evidence).toHaveLength(evidence);
+    expect(result.data.hints).toHaveLength(hints);
+    expect(generateContent).not.toHaveBeenCalled();
+  });
+
   it('defaults Gemini requests to a 120-second timeout', async () => {
     delete process.env.GEMINI_TIMEOUT_MS;
     const { env } = await import('../../src/config/env.js');

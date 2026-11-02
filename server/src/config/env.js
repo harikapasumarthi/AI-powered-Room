@@ -30,9 +30,6 @@ if (values.NODE_ENV === 'production') {
   if (values.SESSION_SECRET.length < 32) {
     throw new Error('SESSION_SECRET must contain at least 32 characters in production.');
   }
-  if (values.GEMINI_MOCK_MODE === 'true') {
-    throw new Error('GEMINI_MOCK_MODE is development-only.');
-  }
 }
 
 export const env = Object.freeze({

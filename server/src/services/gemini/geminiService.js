@@ -140,9 +140,6 @@ async function requestJson(prompt, retryBudget) {
 
 export async function generateMystery(input) {
   if (env.geminiMockMode) {
-    if (env.NODE_ENV === 'production') {
-      throw new AppError(503, 'GEMINI_GENERATION_FAILED', 'Development mock mode is disabled in production.');
-    }
     return { data: createMockCase(input), mode: 'mock' };
   }
 
